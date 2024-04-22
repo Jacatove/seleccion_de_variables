@@ -12,10 +12,10 @@ str(Hald)
 ###### Algoritmo de Regresión Paso a paso  ######
 #################################################
 # 0. Se inicializan variables.
-  # regresores_modelo: lista vacía para agregar los regresores al modelo.
-  # regresores_disponibles: lista con los regresores candidatos para el modelo.
-  # alpha: valor corte para determinar el valor crítico del t-estadístico.
-  # Y: respuesta.
+# regresores_modelo: lista vacía para agregar los regresores al modelo.
+# regresores_disponibles: lista con los regresores candidatos para el modelo.
+# alpha: valor corte para determinar el valor crítico del t-estadístico.
+# Y: respuesta.
 
 # 1. Se halla la mayor correlación simple entre un regresor X_j y la respuesta Y
 #  1.1. Se comparan la correlación entre todos los regresores en regresores_disponibles
@@ -27,7 +27,7 @@ str(Hald)
 
 # Definimos el valor Cutoff, (Alpha) para comprobar que el t-estadístico supera
 # el valor preseleccionado T_IN (T-to-enter).
-alpha <- 0.15
+alpha <- 0.25
 regresores_modelo <- list() # El modelo inicia sin regresores.
 # names(Hald)  X1, X2, ..., Xn, Y.
 # Extraemos las variables regresoras de los nombres de las columnas, y removemos
@@ -98,8 +98,6 @@ while (TRUE){
   formula_del_modelo <- crear_formula(regresores_modelo)
   mejor_t_stadistico <- 0
   mejor_regresor <- NULL
-  regresores_a_reevaluar <- NULL
-  modelo <- NULL
   for (regresor in regresores_disponibles) {
     # Evaluamos "Y ~ Hald$Xi + Hald$Xj" con i fijo y j variable. Caso del primer for dentro del while.
     formula_string_regresor <- paste(formula_del_modelo, sprintf("+ Hald$%s", regresor))
@@ -117,15 +115,13 @@ while (TRUE){
     if (abs(t_estadistico) > abs(mejor_t_stadistico)){
       mejor_t_stadistico <- t_estadistico
       mejor_regresor <- regresor
-      modelo <- modelin
     }
-
+    
   }
   
   df <- df - 1 # Se ha agregado un nuevo parámetro al modelo.
   valor_critico <- qt(1-alpha/2, df) # Valor Crítico
   
-  regresores_a_reevaluar <- regresores_modelo # Antes de que se agregue el nuevo
   if (mejor_t_stadistico > valor_critico) {
     # Se agrega el regresor al modelo.
     dim <- length(regresores_modelo)
@@ -137,32 +133,7 @@ while (TRUE){
     print(sprintf('El t-estadístico del regresor %s, no supera el valor crítico.', mejor_regresor))
     break
   }
-  
-  # Una vez agregado el nuevo regresor, se reevalúan los regresores via el
-  # t-estadístico.
-  for (regresor in regresores_a_reevaluar){
-    t_estadistico_regresor <- summary(modelo)$coefficients[, "t value"][sprintf('Hald$%s', regresor)]
-    print("t_estadistico_regresor")
-    print(t_estadistico_regresor)
-    print("valor_critico")
-    print(valor_critico)
-    print("df")
-    print(df)
-    if (abs(t_estadistico_regresor) < valor_critico){
-      # Se elimina el regresor de los regresores del modelo
-      regresores_modelo <- regresores_modelo[regresores_modelo != regresor]
-      print(sprintf('Se elimina el Regresor %s del modelo.', regresor))
-    }
-  }
-
 }
 
 
 print(paste("El modelo final es:", crear_formula((regresores_modelo))))
-
-
-
-
-
-
-
