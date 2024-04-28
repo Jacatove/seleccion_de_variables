@@ -1,14 +1,3 @@
-# Instalamos el Paquete BAS, en el cual encontramos el dataset a usar,
-# Hald Cement Data.
-install.packages('BAS')
-library(BAS) # Usamos la librería.
-
-# Cargamos y adjuntamos el dataset.
-data(Hald)
-
-# Miramos la estructura y el resumen del dataset.
-str(Hald)
-
 ################################################################################
 ###### Algoritmo de Regresión Paso a paso  #####################################
 ################################################################################
@@ -36,7 +25,12 @@ str(Hald)
 #    regresor con el menor t-estadístico y si dejó de ser significante par el
 #    nivel alpha_out, se remueve.
 
-
+# Instalamos el Paquete BAS, en el cual encontramos el dataset a usar
+# (Hald Cement Data) para explicar el algoritmo.
+install.packages('BAS')
+library(BAS) # Usamos la librería.
+# Cargamos y adjuntamos el dataset.
+data(Hald)
 
 # 1] Se inicializan variables.
 # Definimos las cotas de entrada y salida.
